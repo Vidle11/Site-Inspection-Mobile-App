@@ -1,0 +1,10 @@
+mobile-app/node_modules/
+mobile-app/.expo/
+mobile-app/.expo-export-check/
+mobile-app/dist/
+
+backend/.venv/
+backend/__pycache__/
+
+*.pyc
+*.pyo

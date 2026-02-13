@@ -1,6 +1,9 @@
 from datetime import datetime, timezone
+from pathlib import Path
+import shutil
+from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlmodel import Session
 
 from app.core.auth import AuthContext, get_auth_context
@@ -11,6 +14,8 @@ from app.services.audit_service import AuditService
 from app.services.hash_service import canonical_json_hash
 
 router = APIRouter(prefix="/api/v1")
+UPLOADS_DIR = Path(__file__).resolve().parents[2] / "uploaded_media"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
 @router.get("/health")
@@ -69,6 +74,61 @@ def create_photo(
         longitude=payload.longitude,
         accuracy_meters=payload.accuracy_meters,
         captured_at_device=payload.captured_at_device,
+        captured_at_server=datetime.now(timezone.utc),
+    )
+    session.add(photo)
+    session.commit()
+    session.refresh(photo)
+    return photo
+
+
+@router.post("/photos/upload")
+def upload_photo(
+    evidence_item_id: UUID = Form(...),
+    captured_at_device: datetime = Form(...),
+    exif_json: str = Form(default="{}"),
+    latitude: float | None = Form(default=None),
+    longitude: float | None = Form(default=None),
+    accuracy_meters: float | None = Form(default=None),
+    file: UploadFile = File(...),
+    session: Session = Depends(get_session),
+    auth: AuthContext = Depends(get_auth_context),
+):
+    evidence = session.get(EvidenceItem, evidence_item_id)
+    if not evidence:
+        raise HTTPException(status_code=404, detail="Evidence item not found")
+
+    extension = Path(file.filename or "").suffix.lower()
+    if extension not in {".jpg", ".jpeg", ".png", ".heic"}:
+        extension = ".jpg"
+
+    stored_name = f"{uuid4()}{extension}"
+    stored_path = UPLOADS_DIR / stored_name
+
+    with stored_path.open("wb") as output:
+        shutil.copyfileobj(file.file, output)
+
+    uri = f"/media/{stored_name}"
+
+    photo = Photo(
+        tenant_id=auth.tenant_id,
+        evidence_item_id=evidence_item_id,
+        uri=uri,
+        exif_json=exif_json,
+        metadata_hash=canonical_json_hash(
+            {
+                "uri": uri,
+                "exif_json": exif_json,
+                "latitude": latitude,
+                "longitude": longitude,
+                "accuracy_meters": accuracy_meters,
+                "captured_at_device": captured_at_device.isoformat(),
+            }
+        ),
+        latitude=latitude,
+        longitude=longitude,
+        accuracy_meters=accuracy_meters,
+        captured_at_device=captured_at_device,
         captured_at_server=datetime.now(timezone.utc),
     )
     session.add(photo)

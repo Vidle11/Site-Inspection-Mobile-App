@@ -8,7 +8,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Site Inspection Evidence</Text>
-        <Text style={styles.subtitle}>Offline capture • Hash integrity • Sync aware</Text>
+        <Text style={styles.subtitle}>Offline capture | Hash integrity | Sync aware</Text>
       </View>
       <CaptureScreen />
     </SafeAreaView>
