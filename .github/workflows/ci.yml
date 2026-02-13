@@ -31,8 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          if rg -n "^(<<<<<<<|=======|>>>>>>>)" -S .; then
+      - name: Ensure no unresolved merge conflict markers
+        run: |
+          if git grep -nE '^(<<<<<<<|=======|>>>>>>>)' -- .; then
             echo "Unresolved merge conflict markers found."
             exit 1
           fi
