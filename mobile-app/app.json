@@ -1,0 +1,17 @@
+{
+  "expo": {
+    "name": "Site Inspection Evidence",
+    "slug": "site-inspection-mobile-app",
+    "version": "0.2.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.siteinspection.evidence"
+    },
+    "android": {
+      "package": "com.siteinspection.evidence"
+    }
+  }
+}
