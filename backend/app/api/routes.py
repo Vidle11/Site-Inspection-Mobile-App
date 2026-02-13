@@ -49,6 +49,8 @@ def create_photo(
     evidence = session.get(EvidenceItem, payload.evidence_item_id)
     if not evidence:
         raise HTTPException(status_code=404, detail="Evidence item not found")
+    if evidence.tenant_id != auth.tenant_id:
+        raise HTTPException(status_code=404, detail="Evidence item not found")
 
     photo = Photo(
         tenant_id=auth.tenant_id,
