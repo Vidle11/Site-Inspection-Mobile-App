@@ -14,8 +14,8 @@ class AuthContext:
 
 
 async def get_auth_context(
-    x_tenant_id: str = Header(default="default", alias="X-Tenant-ID"),
-    x_user_id: str = Header(default="00000000-0000-0000-0000-000000000001", alias="X-User-ID"),
-    x_user_role: str = Header(default="INSPECTOR", alias="X-User-Role"),
+    x_tenant_id: str = Header(..., alias="X-Tenant-ID"),
+    x_user_id: UUID = Header(..., alias="X-User-ID"),
+    x_user_role: Role = Header(..., alias="X-User-Role"),
 ) -> AuthContext:
-    return AuthContext(tenant_id=x_tenant_id, user_id=UUID(x_user_id), role=Role(x_user_role))
+    return AuthContext(tenant_id=x_tenant_id, user_id=x_user_id, role=x_user_role)
