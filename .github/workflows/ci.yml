@@ -17,7 +17,10 @@ jobs:
           python-version: '3.11'
       - run: pip install -r requirements.txt
       - run: python -m compileall app
-      - run: pytest -q
+      - name: Run backend tests
+        run: |
+          export PYTHONPATH="$PYTHONPATH:$(pwd)"
+          pytest -q
 
   structure-check:
     runs-on: ubuntu-latest
