@@ -44,7 +44,7 @@ npm run start
 
 ### Expo Go compatibility (iPhone)
 
-This mobile app is pinned to **Expo SDK 54** so it can open in current Expo Go builds on iOS without SDK mismatch errors.
+This mobile app uses Expo SDK 54-compatible dependencies so it can open in current Expo Go builds on iOS without SDK mismatch errors.
 
 If you previously installed dependencies for an older SDK, clean and reinstall:
 
@@ -108,4 +108,20 @@ See:
 
 - Cloud agnostic: API + Postgres + object store adapter abstraction.
 - GitHub Actions workflow runs backend checks, tests, and validates project structure.
+
+
+
+## Clean PR / merge checklist
+
+Before opening or merging a PR, run:
+
+```bash
+# ensure no unresolved merge markers
+rg -n "^(<<<<<<<|=======|>>>>>>>)" -S .
+
+# ensure repo is clean
+git status --short
+```
+
+If conflict markers are found, resolve them before committing.
 

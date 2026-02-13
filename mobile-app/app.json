@@ -2,8 +2,7 @@
   "expo": {
     "name": "Site Inspection Evidence",
     "slug": "site-inspection-mobile-app",
-    "version": "0.2.0",
-    "sdkVersion": "54.0.0",
+    "version": "0.2.1",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "ios": {
@@ -12,6 +11,11 @@
     },
     "android": {
       "package": "com.siteinspection.evidence"
-    }
+    },
+    "plugins": [
+      "expo-camera",
+      "expo-location",
+      "expo-sqlite"
+    ]
   }
 }

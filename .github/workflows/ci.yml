@@ -26,3 +26,13 @@ jobs:
       - run: test -f README.md
       - run: test -f docs/ARCHITECTURE.md
       - run: test -f infra/schema.sql
+
+  conflict-marker-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          if rg -n "^(<<<<<<<|=======|>>>>>>>)" -S .; then
+            echo "Unresolved merge conflict markers found."
+            exit 1
+          fi
